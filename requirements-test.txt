@@ -1,0 +1,4 @@
+ipdb
+mypy
+pylint
+pytest-sugar
