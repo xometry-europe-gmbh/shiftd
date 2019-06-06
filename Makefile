@@ -28,8 +28,8 @@ ifeq ($(shell uname -s),Darwin)
 	FUSION_SITE_PACKAGES="${HOME}/Applications/Autodesk Fusion 360.app/Contents/Api/Python/packages"
 endif
 
-ifneq ($(findstring MSYS_NT,$(shell uname -s)),)
 	AUTODESK_PATH="/c/Documents and Settings/Administrator/AppData/Local/Autodesk/"
+ifneq ($(findstring MINGW64_NT,$(shell uname -s)),)
 	FUSION_SITE_PACKAGES="$(shell find "${AUTODESK_PATH}/webdeploy/production" -name Api -type d)"
 endif
 
