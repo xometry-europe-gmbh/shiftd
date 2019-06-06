@@ -16,7 +16,7 @@ autodocdir = $(docdir)/autodoc
 
 ## OS specifics.
 
-ifneq ($(shell which lsb_release),)
+ifneq ($(shell which lsb_release 2>/dev/null),)
 	OS_ID = $(shell lsb_release -is)
 	OS_CODENAME = $(shell lsb_release -cs)
 endif
@@ -43,28 +43,28 @@ else
 	SED = sed
 endif
 
-ifeq ($(shell which ${SED}),)
+ifeq ($(shell which ${SED} 2>/dev/null),)
 	tools += $(SED)
 endif
 
 GREPTOOL = ack
-ifeq ($(shell which ${GREPTOOL}),)
+ifeq ($(shell which ${GREPTOOL} 2>/dev/null),)
     GREPTOOL = egrep
 endif
 
 AWK = awk
-ifeq ($(shell which ${AWK}),)
+ifeq ($(shell which ${AWK} 2>/dev/null),)
     tools += $(AWK)
 endif
 
-DOCKER = $(shell which docker)
+DOCKER = $(shell which docker 2>/dev/null)
 
 ## Virtual environment.
 
 VENV_DIR = $(CURDIR)/.venv
 
 VENV = virtualenv
-ifeq ($(shell which ${VENV}),)
+ifeq ($(shell which ${VENV} 2>/dev/null),)
 	tools += $(VENV)
 endif
 
@@ -89,19 +89,19 @@ SPHINX_TEMPLATES = $(docdir)/_templates
 SPHINX_OPTS = -d $(SPHINX_BUILDDIR)/doctrees $(CURDIR)/doc
 
 SPHINX = sphinx-build
-ifeq ($(shell which ${SPHINX}),)
+ifeq ($(shell which ${SPHINX} 2>/dev/null),)
 	doctools += $(SPHINX)
 endif
 
 SPHINX_APIDOC = sphinx-apidoc
-ifeq ($(shell which ${SPHINX_APIDOC}),)
+ifeq ($(shell which ${SPHINX_APIDOC} 2>/dev/null),)
 	doctools += $(SPHINX_APIDOC)
 endif
 
 AUTODOC_EXCLUDE_MODULES =
 
 PDFLATEX = pdflatex
-ifeq ($(shell which ${PDFLATEX}),)
+ifeq ($(shell which ${PDFLATEX} 2>/dev/null),)
 	doctools += $(PDFLATEX)
 endif
 
