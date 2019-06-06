@@ -57,10 +57,7 @@ ifeq ($(shell which ${AWK}),)
     tools += $(AWK)
 endif
 
-DOCKER = docker
-ifeq ($(shell which ${DOCKER}),)
-    tools += $(DOCKER)
-endif
+DOCKER = $(shell which docker)
 
 ## Virtual environment.
 
@@ -115,6 +112,10 @@ endif
 all:
 ifdef tools
 	$(error Can't find tools:${tools})
+endif
+#
+ifeq (${DOCKER},)
+	$(warning Can't find Docker executable)
 endif
 
 	@echo "AUTODESK_PATH -> $(AUTODESK_PATH)"
