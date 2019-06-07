@@ -24,13 +24,15 @@ endif
 ## Platform-related definitions.
 
 ifeq ($(shell uname -s),Darwin)
-	AUTODESK_PATH="${HOME}/Library/Application Support/Autodesk"
-	FUSION_SITE_PACKAGES="${HOME}/Applications/Autodesk Fusion 360.app/Contents/Api/Python/packages"
+	AUTODESK_PATH = ${HOME}/Library/Application\ Support/Autodesk
+	FUSION_SITE_PACKAGES = ${HOME}/Applications/Autodesk\ Fusion\ 360.app/Contents/Api/Python/packages
+	FUSION_ADDINS = $(AUTODESK_PATH)/Autodesk\ Fusion\ 360/API/AddIns
 endif
 
 ifneq ($(findstring MINGW64_NT,$(shell uname -s)),)
-	AUTODESK_PATH="/c/Documents\ and\ Settings/Administrator/AppData/Local/Autodesk/"
-	FUSION_SITE_PACKAGES="$(shell find "${AUTODESK_PATH}/webdeploy/production" -name Api -type d)"
+	AUTODESK_PATH = /c/Documents\ and\ Settings/Administrator/AppData/Local/Autodesk/
+	FUSION_SITE_PACKAGES = $(shell find "$(AUTODESK_PATH)/webdeploy/production" -name Api -type d)
+	FUSION_ADDINS = /c/Users/Administrator/AppData/Roaming/Autodesk/Autodesk\ Fusion\ 360/API/AddIns
 endif
 
 ## Tools.
@@ -113,20 +115,27 @@ all:
 ifdef tools
 	$(error Can't find tools:${tools})
 endif
-#
 ifeq (${DOCKER},)
 	$(warning Can't find Docker executable)
 endif
 
 	@echo "AUTODESK_PATH -> $(AUTODESK_PATH)"
 	@echo "FUSION_SITE_PACKAGES -> $(FUSION_SITE_PACKAGES)"
+	@echo "FUSION_ADDINS -> $(FUSION_ADDINS)"
+
+	# DEBUG:
+	@ls $(AUTODESK_PATH)
+	@ls $(FUSION_SITE_PACKAGES)
+	@ls $(FUSION_ADDINS)
 
 ifndef AUTODESK_PATH
 	$(error Undefined variable: AUTODESK_PATH)
 endif
-#
 ifndef FUSION_SITE_PACKAGES
 	$(error Undefined variable: FUSION_SITE_PACKAGES)
+endif
+ifndef FUSION_ADDINS
+	$(error Undefined variable: FUSION_ADDINS)
 endif
 
 
