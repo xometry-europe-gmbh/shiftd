@@ -3,6 +3,10 @@ SHELL = /bin/bash
 ##
 # Definitions.
 
+stub :=
+space := $(stub) $(stub)
+scr_space := $(stub)\ $(stub)
+
 .SUFFIXES:
 
 PACKAGE_NAME = shiftd
@@ -31,7 +35,8 @@ endif
 
 ifneq ($(findstring MINGW64_NT,$(shell uname -s)),)
 	AUTODESK_PATH = /c/Documents\ and\ Settings/Administrator/AppData/Local/Autodesk/
-	FUSION_SITE_PACKAGES = $(shell find "$(AUTODESK_PATH)/webdeploy/production" -name Api -type d)
+	FUSION_SITE_PACKAGES = $(shell find $(AUTODESK_PATH)/webdeploy/production -name Api -type d)
+	FUSION_SITE_PACKAGES := $(subst $(space),$(scr_space),$(FUSION_SITE_PACKAGES))
 	FUSION_ADDINS = /c/Users/Administrator/AppData/Roaming/Autodesk/Autodesk\ Fusion\ 360/API/AddIns
 endif
 
