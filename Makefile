@@ -128,11 +128,6 @@ endif
 	@echo "FUSION_SITE_PACKAGES -> $(FUSION_SITE_PACKAGES)"
 	@echo "FUSION_ADDINS -> $(FUSION_ADDINS)"
 
-	# DEBUG:
-	@ls $(AUTODESK_PATH)
-	@ls $(FUSION_SITE_PACKAGES)
-	@ls $(FUSION_ADDINS)
-
 ifndef AUTODESK_PATH
 	$(error Undefined variable: AUTODESK_PATH)
 endif
