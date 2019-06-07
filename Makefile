@@ -306,6 +306,25 @@ healthcheck:
 		echo " FAILED"; \
 	fi
 
+.PHONY: clean-site
+# target: clean-site – Remove all packages from Fusion's site except builtins and clean temporary files
+clean-site:
+	@echo -en "\nClean Fusion's site packages..."
+
+	@find $(FUSION_SITE_PACKAGES) \
+        -mindepth 1 -maxdepth 1 \
+        -type d \
+            -not -name adsk \
+            -exec rm -rf {} + -o \
+        \
+        -type f -exec rm -rf {} + \
+    && \
+    find $(FUSION_SITE_PACKAGES) \
+		-name "*.py[cod]" -exec rm -f {} + -o \
+		-name __pycache__ -exec rm -rf {} + \
+	&& \
+    echo "DONE"
+
 
 ##
 # Auxiliary targets
