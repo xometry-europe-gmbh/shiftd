@@ -281,6 +281,24 @@ pdf: doc
 
 
 ##
+# Deployment
+
+.PHONY: healthcheck
+# target: healthcheck – Health check Fusion's deploy
+healthcheck:
+	@echo -en "\nHealth checking Fusion's deploy..."
+
+	$(eval deploys_number = $(shell echo "${FUSION_SITE_PACKAGES}" | wc -l))
+	@echo -n "$(deploys_number)"
+
+	@if [[ $(deploys_number) -eq 1 ]]; then \
+		echo " OK"; \
+	else \
+		echo " FAILED"; \
+	fi
+
+
+##
 # Auxiliary targets
 
 .PHONY: help
