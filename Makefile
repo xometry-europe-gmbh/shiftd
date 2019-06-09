@@ -15,6 +15,9 @@ ERROR_HEALTHCHECK = $((${ERROR_OFFSET} + 1))
 PACKAGE_NAME = shiftd
 PACKAGE_VERSION = 0.1.0
 
+ADDIN_SCRIPT = $(PACKAGE_NAME).py
+ADDIN_MANIFEST = $(PACKAGE_NAME).manifest
+
 srcdir = $(CURDIR)/$(PACKAGE_NAME)
 builddir = $(CURDIR)/build
 distdir = $(CURDIR)/dist
@@ -311,12 +314,12 @@ healthcheck:
 
 	$(eval deploys_number = \
 	  $(shell echo "${FUSION_SITE_PACKAGES}" | $(AWK) -F":" '{print NF-1}'))
-	@echo -n "$(deploys_number)"
+	@echo -n "$(deploys_number) "
 
 	@if [[ $(deploys_number) -eq 1 ]]; then \
-		echo " OK"; \
+		echo "OK"; \
 	else \
-		echo " FAILED"; \
+		echo "FAILED"; \
 	fi
 
 .PHONY: clean-site
@@ -337,6 +340,37 @@ clean-site: sys-post-defs
 		-name __pycache__ -exec rm -rf {} + \
 	&& \
     echo "DONE"
+
+.PHONY: install-addin
+# target: install-addin – Install addin to the Fusion's host
+install-addin:
+	@echo -e "\nInstall addin: $(PACKAGE_NAME)..."
+	$(eval addin_path = ${FUSION_ADDINS}/${PACKAGE_NAME})
+
+	@if [[ ! -d $(addin_path) ]]; then \
+		mkdir $(addin_path); \
+	fi
+
+	@for filename in $(ADDIN_SCRIPT) $(ADDIN_MANIFEST); do \
+		echo -n "$${filename} "; \
+		if [[ -f $(addin_path)/$${filename} ]]; then \
+			echo "(SKIPPED)"; \
+			continue; \
+		fi; \
+		cp $(srcdir)/$${filename} $(addin_path) && echo "(DONE)"; \
+	done
+
+.PHONY: remove-addin
+# target: remove-addin – Remove addin from the Fusion's host
+remove-addin:
+	@echo -en "\nRemove addin: $(PACKAGE_NAME)..."
+	$(eval addin_path = ${FUSION_ADDINS}/${PACKAGE_NAME})
+
+	@if [[ -d $(addin_path) ]]; then \
+		rm -rf $(addin_path) && echo "DONE"; \
+	else \
+		echo "NOT FOUND"; \
+	fi
 
 
 ##
