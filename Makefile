@@ -7,6 +7,9 @@ stub :=
 space := $(stub) $(stub)
 scr_space := $(stub)\ $(stub)
 
+ERROR_OFFSET = 100
+ERROR_HEALTHCHECK = $((${ERROR_OFFSET} + 1))
+
 .SUFFIXES:
 
 PACKAGE_NAME = shiftd
@@ -27,16 +30,17 @@ endif
 
 ## Platform-related definitions.
 
-ifeq ($(shell uname -s),Darwin)
+PLATFORM = $(shell uname -s)
+
+ifeq (${PLATFORM},Darwin)
 	AUTODESK_PATH = ${HOME}/Library/Application\ Support/Autodesk
-	FUSION_SITE_PACKAGES = ${HOME}/Applications/Autodesk\ Fusion\ 360.app/Contents/Api/Python/packages
+	FUSION_SITE_PACKAGES = ${HOME}/Applications/Autodesk\ Fusion\ 360.app/Contents/Api/Python/packages:
 	FUSION_ADDINS = $(AUTODESK_PATH)/Autodesk\ Fusion\ 360/API/AddIns
 endif
 
-ifneq ($(findstring MINGW64_NT,$(shell uname -s)),)
+ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
 	AUTODESK_PATH = /c/Documents\ and\ Settings/Administrator/AppData/Local/Autodesk/
-	FUSION_SITE_PACKAGES = $(shell find $(AUTODESK_PATH)/webdeploy/production -name Api -type d)/Python/packages
-	FUSION_SITE_PACKAGES := $(subst $(space),$(scr_space),$(FUSION_SITE_PACKAGES))
+	FUSION_SITE_PACKAGES = $(shell find $(AUTODESK_PATH)/webdeploy/production -name Api -type d | tr '\n' ':')
 	FUSION_ADDINS = /c/Users/Administrator/AppData/Roaming/Autodesk/Autodesk\ Fusion\ 360/API/AddIns
 endif
 
@@ -116,7 +120,7 @@ endif
 ##
 # All
 
-all:
+all: healthcheck sys-post-defs
 ifdef tools
 	$(error Can't find tools:${tools})
 endif
@@ -136,6 +140,14 @@ ifndef FUSION_SITE_PACKAGES
 endif
 ifndef FUSION_ADDINS
 	$(error Undefined variable: FUSION_ADDINS)
+endif
+
+.PHONY: sys-post-defs
+sys-post-defs:
+	$(eval FUSION_SITE_PACKAGES = ${FUSION_SITE_PACKAGES::=})
+ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
+	$(eval FUSION_SITE_PACKAGES = ${FUSION_SITE_PACKAGES}/Python/packages)
+	$(eval FUSION_SITE_PACKAGES := $(subst ${space},${scr_space},${FUSION_SITE_PACKAGES}))
 endif
 
 
@@ -297,7 +309,8 @@ pdf: doc
 healthcheck:
 	@echo -en "\nHealth checking Fusion's deploy..."
 
-	$(eval deploys_number = $(shell echo "${FUSION_SITE_PACKAGES}" | wc -l))
+	$(eval deploys_number = \
+	  $(shell echo "${FUSION_SITE_PACKAGES}" | $(AWK) -F":" '{print NF-1}'))
 	@echo -n "$(deploys_number)"
 
 	@if [[ $(deploys_number) -eq 1 ]]; then \
@@ -308,7 +321,7 @@ healthcheck:
 
 .PHONY: clean-site
 # target: clean-site – Remove all packages from Fusion's site except builtins and clean temporary files
-clean-site:
+clean-site: sys-post-defs
 	@echo -en "\nClean Fusion's site packages..."
 
 	@find $(FUSION_SITE_PACKAGES) \
