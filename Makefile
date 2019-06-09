@@ -325,7 +325,7 @@ healthcheck:
 .PHONY: clean-site
 # target: clean-site – Remove all packages from Fusion's site except builtins and clean temporary files
 clean-site: sys-post-defs
-	@echo -en "\nClean Fusion's site packages..."
+	@echo -en "\nCleaning Fusion's site packages..."
 
 	@find $(FUSION_SITE_PACKAGES) \
         -mindepth 1 -maxdepth 1 \
@@ -344,7 +344,7 @@ clean-site: sys-post-defs
 .PHONY: install-addin
 # target: install-addin – Install addin to the Fusion's host
 install-addin:
-	@echo -e "\nInstall addin: $(PACKAGE_NAME)..."
+	@echo -e "\nInstalling addin: $(PACKAGE_NAME)..."
 	$(eval addin_path = ${FUSION_ADDINS}/${PACKAGE_NAME})
 
 	@if [[ ! -d $(addin_path) ]]; then \
@@ -363,7 +363,7 @@ install-addin:
 .PHONY: remove-addin
 # target: remove-addin – Remove addin from the Fusion's host
 remove-addin:
-	@echo -en "\nRemove addin: $(PACKAGE_NAME)..."
+	@echo -en "\nRemoving addin: $(PACKAGE_NAME)..."
 	$(eval addin_path = ${FUSION_ADDINS}/${PACKAGE_NAME})
 
 	@if [[ -d $(addin_path) ]]; then \
