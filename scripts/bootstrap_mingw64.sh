@@ -38,6 +38,7 @@ echo
 pip --version
 echo
 pip install -U virtualenv
+echo
 pip list
 
 echo -e "\nDONE"
