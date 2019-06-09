@@ -1,0 +1,13 @@
+{
+	"autodeskProduct":	"Fusion360",
+	"type":	"addin",
+	"id":	"003ada68-7bd8-430f-8a6e-ad951245ca02",
+	"author":	"Alex Kopchikov",
+	"description":	{
+		"":	"Shift GmbH Dispatcher."
+	},
+	"version":	"0.1.0",
+	"runOnStartup":	false,
+	"supportedOS":	"windows|mac",
+	"editEnabled":	true
+}
