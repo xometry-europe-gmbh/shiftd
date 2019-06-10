@@ -191,10 +191,10 @@ endif
 
 
 ##
-# Virtual environment.
+# Virtual environment
 
 .PHONY: requirements
-# target: requirements – Compile Pip requirements
+# target: requirements - Compile Pip requirements
 requirements:
 	@if [[ ! -f requirements.txt ]]; then \
 		touch requirements.txt; \
@@ -214,7 +214,7 @@ $(VENV_DIR): requirements.txt requirements-test.txt
 	@"$(VENV_DIR)/bin"/pip install -Ur $(word 2,$^)
 
 .PHONY: venv
-# target: venv – Create the virtual environment
+# target: venv - Create the virtual environment
 venv: $(VENV_DIR)
 
 
@@ -260,19 +260,19 @@ docker-run:
 		"$(PACKAGE_NAME):$(PACKAGE_VERSION)"
 
 .PHONY: docker-clean
-# target: docker-clean – Clean dangling images
+# target: docker-clean - Clean dangling images
 docker-clean:
 	@$(DOCKER) rmi -f \
 		$(shell $(DOCKER) images -a | $(GREPTOOL) "<none>" | $(AWK) '{print $$3}') \
 	&>/dev/null || :
 
 .PHONY: docker-distclean
-# target: docker-distclean – Clean built containers
+# target: docker-distclean - Clean built containers
 docker-distclean:
 	@$(DOCKER) rm -f $(shell $(DOCKER) ps -aq) &>/dev/null || :
 
 .PHONY: docker-mostlyclean
-# target: docker-mostlyclean – Remove all unused images, built containers and volumes
+# target: docker-mostlyclean - Remove all unused images, built containers and volumes
 docker-mostlyclean: docker-distclean
 	@$(DOCKER) image prune -a
 	@$(DOCKER) volume prune -f
@@ -282,24 +282,24 @@ docker-mostlyclean: docker-distclean
 # Building and packaging
 
 .PHONY: dist
-# target: dist – Create a binary (wheel) distribution
+# target: dist - Create a binary (wheel) distribution
 dist:
 	@[ ! -f "$(distdir)"/*.whl ]
 	@python setup.py bdist_wheel
 
 .PHONY: sdist
-# target: sdist – Create a source distribution
+# target: sdist - Create a source distribution
 sdist:
 	@[ ! -f "$(distdir)"/*.tar.gz ]
 	@python setup.py sdist
 
 .PHONY: install
-# target: install – Install project sources in "development mode"
+# target: install - Install project sources in "development mode"
 install:
 	@python setup.py develop
 
 .PHONY: uninstall
-# target: uninstall – Uninstall project sources
+# target: uninstall - Uninstall project sources
 uninstall:
 	@python setup.py develop --uninstall
 
@@ -308,13 +308,13 @@ uninstall:
 # Testing
 
 .PHONY: check
-# target: check – Run tests
+# target: check - Run tests
 check:
 	@python setup.py test -a "-vv"
 
 
 ##
-# Documentation.
+# Documentation
 
 .PHONY: doc
 doc:
@@ -329,12 +329,12 @@ apidoc: doc
 		$(foreach module,$(AUTODOC_EXCLUDE_MODULES),$(PACKAGE_NAME)/$(module))
 
 .PHONY: html
-# target: html – Render standalone HTML files
+# target: html - Render standalone HTML files
 html: doc
 	@$(SPHINX) -b html $(SPHINX_OPTS) "$(SPHINX_BUILDDIR)/html"
 
 .PHONY: pdf
-# target: pdf – Generate LaTeX files and run them through pdflatex
+# target: pdf - Generate LaTeX files and run them through pdflatex
 pdf: doc
 	@$(SPHINX) -b latex $(SPHINX_OPTS) "$(SPHINX_BUILDDIR)/latex" && \
 		$(MAKE) -C "$(SPHINX_BUILDDIR)/latex" all-pdf
@@ -344,7 +344,7 @@ pdf: doc
 # Deployment
 
 .PHONY: healthcheck
-# target: healthcheck – Health check Fusion's deploy
+# target: healthcheck - Health check Fusion's deploy
 healthcheck:
 	@echo -en "\nHealth checking Fusion's deploy..."
 
@@ -359,7 +359,7 @@ healthcheck:
 	fi
 
 .PHONY: clean-site
-# target: clean-site – Remove all packages from Fusion's site except builtins and clean temporary files
+# target: clean-site - Remove all packages from Fusion's site except builtins and clean temporary files
 clean-site: sys-post-defs
 	@echo -en "\nCleaning Fusion's site packages..."
 
@@ -378,7 +378,7 @@ clean-site: sys-post-defs
     echo "DONE"
 
 .PHONY: install-addin
-# target: install-addin – Install addin to the Fusion's host
+# target: install-addin - Install addin to the Fusion's host
 install-addin:
 	@echo -e "\nInstalling addin: $(PACKAGE_NAME)..."
 	$(eval addin_path = ${FUSION_ADDINS}/${PACKAGE_NAME})
@@ -397,7 +397,7 @@ install-addin:
 	done
 
 .PHONY: remove-addin
-# target: remove-addin – Remove addin from the Fusion's host
+# target: remove-addin - Remove addin from the Fusion's host
 remove-addin:
 	@echo -en "\nRemoving addin: $(PACKAGE_NAME)..."
 	$(eval addin_path = ${FUSION_ADDINS}/${PACKAGE_NAME})
@@ -409,7 +409,7 @@ remove-addin:
 	fi
 
 .PHONY: new-local-venv
-# target: new-local-venv – Create local virtual environment
+# target: new-local-venv - Create local virtual environment
 new-local-venv: sys-post-defs
 ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
 	$(eval tmp_path = ${CURDIR}/.tmp_venv)
@@ -435,7 +435,7 @@ else
 endif
 
 .PHONY: new-host-venv
-# target: new-host-venv – Create Fusion-hosted virtual environment
+# target: new-host-venv - Create Fusion-hosted virtual environment
 new-host-venv: sys-post-defs
 	$(eval tmp_path = ${CURDIR}/.tmp_venv)
 
@@ -515,7 +515,7 @@ endif
 # Auxiliary targets
 
 .PHONY: help
-# target: help – Display all callable targets
+# target: help - Display all callable targets
 help:
 	@echo
 	@egrep "^\s*#\s*target\s*:\s*" [Mm]akefile \
@@ -525,7 +525,7 @@ help:
 ## Cleaners.
 
 .PHONY: clean
-# target: clean – Clean the project's directrory
+# target: clean - Clean the project's directrory
 clean:
 	@find "$(CURDIR)" \
 		-name "*.py[cod]" -exec rm -fv {} + -o \
@@ -536,7 +536,7 @@ clean:
 		"$(CURDIR)/.pytest_cache"
 
 .PHONY: distclean
-# target: distclean – Clean the project's build output
+# target: distclean - Clean the project's build output
 distclean:
 	@find "$(CURDIR)" -path "$(VENV_DIR)" -prune -o \
 		-name "*.egg-info" -exec rm -rfv {} + -o \
@@ -552,7 +552,7 @@ distclean:
 	@rm -fv "$(docdir)/autodoc"/*.rst
 
 .PHONY: mostlyclean
-# target: mostlyclean – Delete almost everything
+# target: mostlyclean - Delete almost everything
 mostlyclean: clean distclean
 	@find "$(CURDIR)" -name .DS_Store -exec rm -fv {} +
 
