@@ -48,7 +48,6 @@ ifeq (${PLATFORM},Darwin)
 
 	PYTHON = $(FUSION_PYTHON)/python
 	PYVENV = $(FUSION_PYTHON)/pyvenv_
-	VIRTUALENV = virtualenv
 endif
 
 ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
@@ -62,7 +61,6 @@ ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
 
 	PYTHON = $(FUSION_PYTHON)/python.exe
 	PYTHON_LOCAL = /c/Python37/python.exe
-	PIP = $(FUSION_PYTHON_SCRIPTS)/pip.exe
 endif
 
 ## Tools.
@@ -160,14 +158,8 @@ endif
 ifdef PYVENV
 	@echo "PYVENV -> $(PYVENV)"
 endif
-ifdef VIRTUALENV
-	@echo "VIRTUALENV -> $(VIRTUALENV)"
-endif
 ifdef PYTHON_LOCAL
 	@echo "PYTHON_LOCAL -> $(PYTHON_LOCAL)"
-endif
-ifdef PIP
-	@echo "PIP -> $(PIP)"
 endif
 
 ifndef AUTODESK_PATH
@@ -183,9 +175,14 @@ endif
 .PHONY: sys-post-defs
 sys-post-defs:
 	$(eval FUSION_SITE_PACKAGES = ${FUSION_SITE_PACKAGES::=})
+ifeq (${PLATFORM},Darwin)
+	$(eval FUSION_PYTHON := $(subst ${space},${scr_space},${FUSION_PYTHON}))
+endif
 ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
+	$(eval FUSION_PYTHON_SCRIPTS := $(subst ${space},${scr_space},${FUSION_PYTHON_SCRIPTS}))
 	$(eval FUSION_SITE_PACKAGES = ${FUSION_SITE_PACKAGES}/Python/packages)
 	$(eval FUSION_SITE_PACKAGES := $(subst ${space},${scr_space},${FUSION_SITE_PACKAGES}))
+	$(eval PYTHON := $(subst ${space},${scr_space},${PYTHON}))
 endif
 
 
@@ -406,6 +403,84 @@ remove-addin:
 	else \
 		echo "NOT FOUND"; \
 	fi
+
+.PHONY: new-host-venv
+# target: new-host-venv – Create Fusion-hosted virtual environment
+new-host-venv: sys-post-defs
+	$(eval tmp_path = ${CURDIR}/.tmp_venv)
+
+	@echo -e "\nCreate a new virtual environment (Fusion-hosted)...\n"
+	@echo -e "Python facility:\n==="
+	@$(PYTHON) --version
+	@echo
+
+	@echo -n "Ensure an empty \`$(tmp_path)\`..."
+	@rm -rf "$(tmp_path)" && echo "OK"
+	@echo
+
+ifeq (${PLATFORM},Darwin)
+	@(cd $(FUSION_PYTHON) && \
+	  \
+	   $(SED) "s/#\!.*//g" pyvenv > $(PYVENV) && \
+	   ./python $(PYVENV) --without-pip "$(tmp_path)" \
+	  )
+
+	$(eval _python = ${tmp_path}/bin/python)
+	$(eval _pip = ${tmp_path}/bin/pip)
+endif
+ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
+	$(eval _python = ${PYTHON})
+	$(eval _pip = ${FUSION_PYTHON_SCRIPTS}/pip.exe)
+endif
+
+	@if [[ ! -f "get-pip.py" ]]; then \
+		curl -s "https://bootstrap.pypa.io/get-pip.py" -o get-pip.py; \
+	fi
+	@$(_python) get-pip.py
+	@echo
+	@$(_pip) --version
+	@echo
+
+ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
+	$(eval path_mod = PATH="$(FUSION_PYTHON):$${PATH}")
+
+	@$(_pip) install -U virtualenv
+	$(eval _virtualenv = ${path_mod} ${FUSION_PYTHON_SCRIPTS}/virtualenv.exe)
+	@echo "Virtualenv $$(${_virtualenv} --version)"
+	@echo
+
+	@$(_virtualenv) "$(tmp_path)"
+	$(eval _python = ${path_mod} ${tmp_path}/Scripts/python.exe)
+	$(eval _pip = ${path_mod} ${tmp_path}/Scripts/pip.exe)
+endif
+
+	@for pkg in $(SITE_PACKAGES); do \
+		$(_pip) install "$${pkg}"; \
+	done
+	@echo -e "DONE\n"
+
+	@echo -e "Stuff Fusion's site with the installed packages...\n"
+
+	@lib_path="$$(find "$(tmp_path)" -name site-packages -type d)"; \
+	\
+	for item in $$(${_pip} freeze | ${SED} "s/==.*//g"); do \
+	    if [[ "$${item}" == "msgpack-python" ]]; then item="msgpack"; fi; \
+	    if [[ "$${item}" == "pyzmq" ]]; then item="zmq"; fi; \
+	    \
+    	(cd "$${lib_path}" && \
+    	 \
+    	  recurse_flag=""; \
+    	  for fname in *$${item}*; do \
+    	      if [[ -d "$${fname}" ]]; then recurse_flag="-R"; fi; \
+    	      cp $${recurse_flag} "$${fname}" $(FUSION_SITE_PACKAGES); \
+    	  done \
+    	 ); \
+	done
+
+	@(cd $(FUSION_SITE_PACKAGES) && rm -rf *.dist-info)
+
+	@ls -al $(FUSION_SITE_PACKAGES)
+	@echo "DONE"
 
 
 ##
