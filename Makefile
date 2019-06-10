@@ -18,6 +18,9 @@ PACKAGE_VERSION = 0.1.0
 ADDIN_SCRIPT = $(PACKAGE_NAME).py
 ADDIN_MANIFEST = $(PACKAGE_NAME).manifest
 
+SITE_PACKAGES = \
+	zerorpc
+
 srcdir = $(CURDIR)/$(PACKAGE_NAME)
 builddir = $(CURDIR)/build
 distdir = $(CURDIR)/dist
@@ -37,14 +40,29 @@ PLATFORM = $(shell uname -s)
 
 ifeq (${PLATFORM},Darwin)
 	AUTODESK_PATH = ${HOME}/Library/Application\ Support/Autodesk
+
+	FUSION_PYTHON = $(shell find ${AUTODESK_PATH}/webdeploy/shared/PYTHON -name bin -type d)
+
 	FUSION_SITE_PACKAGES = ${HOME}/Applications/Autodesk\ Fusion\ 360.app/Contents/Api/Python/packages:
 	FUSION_ADDINS = $(AUTODESK_PATH)/Autodesk\ Fusion\ 360/API/AddIns
+
+	PYTHON = $(FUSION_PYTHON)/python
+	PYVENV = $(FUSION_PYTHON)/pyvenv_
+	VIRTUALENV = virtualenv
 endif
 
 ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
 	AUTODESK_PATH = /c/Documents\ and\ Settings/Administrator/AppData/Local/Autodesk/
-	FUSION_SITE_PACKAGES = $(shell find $(AUTODESK_PATH)/webdeploy/production -name Api -type d | tr '\n' ':')
+
+	FUSION_PYTHON = $(shell find ${AUTODESK_PATH}/webdeploy/shared/PYTHON -name bin -type d)
+	FUSION_PYTHON_SCRIPTS = $(FUSION_PYTHON)/Scripts
+
+	FUSION_SITE_PACKAGES = $(shell find ${AUTODESK_PATH}/webdeploy/production -name Api -type d | tr '\n' ':')
 	FUSION_ADDINS = /c/Users/Administrator/AppData/Roaming/Autodesk/Autodesk\ Fusion\ 360/API/AddIns
+
+	PYTHON = $(FUSION_PYTHON)/python.exe
+	PYTHON_LOCAL = /c/Python37/python.exe
+	PIP = $(FUSION_PYTHON_SCRIPTS)/pip.exe
 endif
 
 ## Tools.
@@ -132,8 +150,25 @@ ifeq (${DOCKER},)
 endif
 
 	@echo "AUTODESK_PATH -> $(AUTODESK_PATH)"
+	@echo "FUSION_PYTHON -> $(FUSION_PYTHON)"
+ifdef FUSION_PYTHON_SCRIPTS
+	@echo "FUSION_PYTHON_SCRIPTS -> $(FUSION_PYTHON_SCRIPTS)"
+endif
 	@echo "FUSION_SITE_PACKAGES -> $(FUSION_SITE_PACKAGES)"
 	@echo "FUSION_ADDINS -> $(FUSION_ADDINS)"
+	@echo "PYTHON -> $(PYTHON)"
+ifdef PYVENV
+	@echo "PYVENV -> $(PYVENV)"
+endif
+ifdef VIRTUALENV
+	@echo "VIRTUALENV -> $(VIRTUALENV)"
+endif
+ifdef PYTHON_LOCAL
+	@echo "PYTHON_LOCAL -> $(PYTHON_LOCAL)"
+endif
+ifdef PIP
+	@echo "PIP -> $(PIP)"
+endif
 
 ifndef AUTODESK_PATH
 	$(error Undefined variable: AUTODESK_PATH)
