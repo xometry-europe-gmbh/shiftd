@@ -8,7 +8,7 @@ space := $(stub) $(stub)
 scr_space := $(stub)\ $(stub)
 
 ERROR_OFFSET = 100
-ERROR_HEALTHCHECK = $((${ERROR_OFFSET} + 1))
+ERROR_TMP_VENV = $((${ERROR_OFFSET} + 4))
 
 .SUFFIXES:
 
@@ -175,15 +175,19 @@ endif
 .PHONY: sys-post-defs
 sys-post-defs:
 	$(eval FUSION_SITE_PACKAGES = ${FUSION_SITE_PACKAGES::=})
+
 ifeq (${PLATFORM},Darwin)
 	$(eval FUSION_PYTHON := $(subst ${space},${scr_space},${FUSION_PYTHON}))
 endif
+
 ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
 	$(eval FUSION_PYTHON_SCRIPTS := $(subst ${space},${scr_space},${FUSION_PYTHON_SCRIPTS}))
 	$(eval FUSION_SITE_PACKAGES = ${FUSION_SITE_PACKAGES}/Python/packages)
 	$(eval FUSION_SITE_PACKAGES := $(subst ${space},${scr_space},${FUSION_SITE_PACKAGES}))
 	$(eval PYTHON := $(subst ${space},${scr_space},${PYTHON}))
 endif
+
+	$(eval path_mod = PATH="$(FUSION_PYTHON):$${PATH}")
 
 
 ##
@@ -404,6 +408,32 @@ remove-addin:
 		echo "NOT FOUND"; \
 	fi
 
+.PHONY: new-local-venv
+# target: new-local-venv – Create local virtual environment
+new-local-venv: sys-post-defs
+ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
+	$(eval tmp_path = ${CURDIR}/.tmp_venv)
+
+	$(eval _python = ${path_mod} ${tmp_path}/Scripts/python.exe)
+	$(eval _pip = ${path_mod} ${tmp_path}/Scripts/pip.exe)
+
+	@if [[ ! -d "$(tmp_path)" ]]; then \
+		echo "ERROR: Can't find the local environment \`$(tmp_path)\`" && \
+		exit $(ERROR_TMP_VENV); \
+	fi
+
+	@echo -e "\nCreate a new virtual environment (local)...\n"
+	@$(_pip) --version
+	@echo
+	@$(_python) -c 'import ssl ; print(ssl.OPENSSL_VERSION)'
+	@echo
+	@$(_pip) install -Ur requirements-test.txt
+	@echo -e "DONE\n"
+	@$(_pip) list
+else
+	$(error Unsupported platform (${PLATFORM}))
+endif
+
 .PHONY: new-host-venv
 # target: new-host-venv – Create Fusion-hosted virtual environment
 new-host-venv: sys-post-defs
@@ -442,8 +472,6 @@ endif
 	@echo
 
 ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
-	$(eval path_mod = PATH="$(FUSION_PYTHON):$${PATH}")
-
 	@$(_pip) install -U virtualenv
 	$(eval _virtualenv = ${path_mod} ${FUSION_PYTHON_SCRIPTS}/virtualenv.exe)
 	@echo "Virtualenv $$(${_virtualenv} --version)"
@@ -529,4 +557,5 @@ mostlyclean: clean distclean
 	@find "$(CURDIR)" -name .DS_Store -exec rm -fv {} +
 
 	@rm -rfv \
-		"$(VENV_DIR)"
+		"$(VENV_DIR)" \
+		".tmp_venv"
