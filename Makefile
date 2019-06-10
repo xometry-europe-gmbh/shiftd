@@ -54,7 +54,7 @@ endif
 ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
 	AUTODESK_PATH = /c/Documents\ and\ Settings/Administrator/AppData/Local/Autodesk/
 
-	FUSION_PYTHON = $(shell find ${AUTODESK_PATH}/webdeploy/shared/PYTHON -name bin -type d)
+	FUSION_PYTHON = $(shell find ${AUTODESK_PATH}/webdeploy/shared/PYTHON -name Python -type d)
 	FUSION_PYTHON_SCRIPTS = $(FUSION_PYTHON)/Scripts
 
 	FUSION_SITE_PACKAGES = $(shell find ${AUTODESK_PATH}/webdeploy/production -name Api -type d | tr '\n' ':')
