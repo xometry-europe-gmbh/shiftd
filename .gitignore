@@ -1,4 +1,5 @@
 .DS_Store
+get-pip.py
 
 *~
 *.log
@@ -9,6 +10,7 @@
 .pytest_cache
 .eggs
 .venv
+.tmp_venv
 __pycache__
 build
 doc/autodoc
