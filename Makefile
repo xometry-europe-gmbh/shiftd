@@ -58,6 +58,7 @@ ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
 
 	PYTHON = $(FUSION_PYTHON)/python.exe
 	PYTHON_LOCAL = /c/Python37/python.exe
+	PYTHON_LOCAL_SCRIPTS = /c/Python37/Scripts
 endif
 
 ## Tools.
@@ -157,6 +158,9 @@ ifdef PYVENV
 endif
 ifdef PYTHON_LOCAL
 	@echo "PYTHON_LOCAL -> $(PYTHON_LOCAL)"
+endif
+ifdef PYTHON_LOCAL_SCRIPTS
+	@echo "PYTHON_LOCAL_SCRIPTS -> $(PYTHON_LOCAL_SCRIPTS)"
 endif
 
 ifndef AUTODESK_PATH
@@ -410,24 +414,38 @@ remove-addin:
 # target: new-local-venv - Create local virtual environment
 new-local-venv: sys-post-defs
 ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
-	$(eval tmp_path = ${CURDIR}/.tmp_venv)
+	$(eval _python = ${path_mod_local} ${PYTHON_LOCAL})
+	$(eval _pip = ${path_mod_local} ${PYTHON_LOCAL_SCRIPTS}/pip.exe)
 
-	$(eval _python = ${path_mod} ${tmp_path}/Scripts/python.exe)
-	$(eval _pip = ${path_mod} ${tmp_path}/Scripts/pip.exe)
-
-	@if [[ ! -d "$(tmp_path)" ]]; then \
-		echo "ERROR: Can't find the local environment \`$(tmp_path)\`" && \
-		exit $(ERROR_TMP_VENV); \
-	fi
-
+ifeq ($(wildcard $(VENV_DIR)),)
 	@echo -e "\nCreate a new virtual environment (local)...\n"
+	@echo -e "Python facility:\n==="
+	@$(_python) --version
+	@echo
+
+	@$(_pip) install --user -U pip
 	@$(_pip) --version
+	@echo
+
+	@$(_pip) install -U virtualenv
+	$(eval _virtualenv = ${path_mod_local} ${PYTHON_LOCAL_SCRIPTS}/virtualenv.exe)
+	@echo "Virtualenv $$(${_virtualenv} --version)"
+	@echo
+
+	@$(_virtualenv) "$(VENV_DIR)"
+	$(eval _python = ${path_mod_local} ${VENV_DIR}/Scripts/python.exe)
+	$(eval _pip = ${path_mod_local} ${VENV_DIR}/Scripts/pip.exe)
 	@echo
 	@$(_python) -c 'import ssl ; print(ssl.OPENSSL_VERSION)'
 	@echo
+
 	@$(_pip) install -Ur requirements-test.txt
 	@echo -e "DONE\n"
 	@$(_pip) list
+else
+	$(error Local environment `$(VENV_DIR)` already exists)
+endif
+
 else
 	$(error Unsupported platform (${PLATFORM}))
 endif
