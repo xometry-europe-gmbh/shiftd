@@ -144,7 +144,7 @@ Get started with MinGW64
     Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
     # make new-host-venv
 
-    Create a new virtual environment (Fusion-hosted)...
+    Creating a new virtual environment (Fusion-hosted)...
 
     Python facility:
     ===
@@ -184,7 +184,7 @@ Get started with MinGW64
     Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
     # make new-local-venv
 
-    Create a new virtual environment (local)...
+    Creating a new virtual environment (local)...
 
     Python facility:
     ===
