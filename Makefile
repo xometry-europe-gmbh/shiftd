@@ -440,7 +440,7 @@ ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
 	$(eval _pip = ${path_mod_local} ${PYTHON_LOCAL_SCRIPTS}/pip.exe)
 
 ifeq ($(wildcard $(VENV_DIR)),)
-	@echo -e "\nCreate a new virtual environment (local)...\n"
+	@echo -e "\nCreating a new virtual environment (local)...\n"
 	@echo -e "Python facility:\n==="
 	@$(_python) --version
 	@echo
@@ -477,7 +477,7 @@ endif
 new-host-venv: sys-post-defs
 	$(eval tmp_path = ${CURDIR}/.tmp_venv)
 
-	@echo -e "\nCreate a new virtual environment (Fusion-hosted)...\n"
+	@echo -e "\nCreating a new virtual environment (Fusion-hosted)...\n"
 	@echo -e "Python facility:\n==="
 	@$(PYTHON) --version
 	@echo
