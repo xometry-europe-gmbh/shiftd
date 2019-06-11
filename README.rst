@@ -76,19 +76,13 @@ Makefile facility
 Get started with MinGW64
 ------------------------
 
-* Clone *ShiftD* repo::
+* Clone *ShiftD* repo (via PowerShell console)::
 
-    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev
-    # pwd
-    /c/Users/Administrator/dev
-
-    # git clone --recurse-submodules https://github.com/shift-gmbh/shiftd.git
+    PS C:\Users\Administrator\dev> git clone --recurse-submodules https://github.com/shift-gmbh/shiftd.git
     Cloning into 'shiftd'...
     <...>
 
-* Run the bootstrap script::
-
-    # cd shiftd/
+* Run the bootstrap script (via MinGW64 console)::
 
     Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
     # ./scripts/bootstrap_mingw64.sh
@@ -120,3 +114,99 @@ Get started with MinGW64
     wheel      0.33.4
 
     DONE
+
+* Check consistency and requirements (via MinGW64 console)::
+
+    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
+    # make
+
+    Health checking Fusion's deploy...1 OK
+    Makefile:145: Can't find Docker executable
+    AUTODESK_PATH -> /c/Documents\ and\ Settings/Administrator/AppData/Local/Autodesk/
+    FUSION_PYTHON -> /c/Documents and Settings/Administrator/AppData/Local/Autodesk//webdeploy/shared/PYTHON/3.5.3c/win64_sp/Python
+    FUSION_PYTHON_SCRIPTS -> /c/Documents\ and\ Settings/Administrator/AppData/Local/Autodesk//webdeploy/shared/PYTHON/3.5.3c/win64_sp/Python/Scripts
+    FUSION_SITE_PACKAGES -> /c/Documents\ and\ Settings/Administrator/AppData/Local/Autodesk//webdeploy/production/d114930713fc09ae573cf2ada6f60182d13cd0ed/Api/Python/packages
+    FUSION_ADDINS -> /c/Users/Administrator/AppData/Roaming/Autodesk/Autodesk\ Fusion\ 360/API/AddIns
+    PYTHON -> /c/Documents\ and\ Settings/Administrator/AppData/Local/Autodesk//webdeploy/shared/PYTHON/3.5.3c/win64_sp/Python/python.exe
+    PYTHON_LOCAL -> /c/Python37/python.exe
+    PYTHON_LOCAL_SCRIPTS -> /c/Python37/Scripts
+
+* Prepare a new virtual environment for the addin based on Fusion-hosted version of Python::
+
+    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
+    # make mostlyclean
+
+    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
+    # make clean-site
+
+    Cleaning Fusion's site packages...DONE
+
+    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
+    # make new-host-venv
+
+    Create a new virtual environment (Fusion-hosted)...
+
+    Python facility:
+    ===
+    Python 3.5.3
+
+    Ensure an empty `/c/Users/Administrator/dev/shiftd/.tmp_venv`...OK
+    <...>
+
+    pip 19.1.1 from c:\documents and settings\administrator\appdata\local\autodesk\webdeploy\shared\python\3.5.3c\win64_sp\python\lib\site-packages\pip (python 3.5)
+
+    Requirement already up-to-date: virtualenv in c:\documents and settings\administrator\appdata\local\autodesk\webdeploy\shared\python\3.5.3c\win64_sp\python\lib\site-packages (16.6.0)
+    Virtualenv 16.6.0
+
+    Using base prefix 'c:\\documents and settings\\administrator\\appdata\\local\\autodesk\\webdeploy\\shared\\python\\3.5.3c\\win64_sp\\python'
+    <...>
+    DONE
+
+    Stuff Fusion's site with the installed packages...
+
+    total 272
+    drwxr-xr-x 1 Administrator None      0 Jun 11 07:28 .
+    drwxr-xr-x 1 Administrator None      0 Jun  7 12:50 ..
+    -rwxr-xr-x 1 Administrator None 174592 Jun 11 07:28 _cffi_backend.cp35-win_amd64.pyd
+    drwxr-xr-x 1 Administrator None      0 Jun  9 11:40 adsk
+    drwxr-xr-x 1 Administrator None      0 Jun 10 06:29 cffi
+    drwxr-xr-x 1 Administrator None      0 Jun 10 06:29 future
+    drwxr-xr-x 1 Administrator None      0 Jun 10 06:29 gevent
+    -rwxr-xr-x 1 Administrator None  28672 Jun 11 07:28 greenlet.cp35-win_amd64.pyd
+    drwxr-xr-x 1 Administrator None      0 Jun 10 06:29 msgpack
+    drwxr-xr-x 1 Administrator None      0 Jun 10 06:29 pycparser
+    drwxr-xr-x 1 Administrator None      0 Jun 10 06:29 zerorpc
+    drwxr-xr-x 1 Administrator None      0 Jun 10 06:29 zmq
+    DONE
+
+* Prepare a new virtual environment for the standalone logistic app based on latest Python version::
+
+    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
+    # make new-local-venv
+
+    Create a new virtual environment (local)...
+
+    Python facility:
+    ===
+    Python 3.7.3
+
+    Requirement already up-to-date: pip in c:\python37\lib\site-packages (19.1.1)
+    pip 19.1.1 from c:\python37\lib\site-packages\pip (python 3.7)
+
+    Requirement already up-to-date: virtualenv in c:\python37\lib\site-packages (16.6.0)
+    Virtualenv 16.6.0
+
+    Using base prefix 'c:\\python37'
+    New python executable in C:\Users\Administrator\dev\shiftd\.venv\Scripts\python.exe
+    Installing setuptools, pip, wheel...
+    done.
+
+    OpenSSL 1.1.0j  20 Nov 2018
+    <...>
+    DONE
+
+    Package            Version
+    ------------------ -------
+    astroid            2.2.5
+    atomicwrites       1.3.0
+    <...>
