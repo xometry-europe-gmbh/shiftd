@@ -11,6 +11,7 @@ scr_space := $(stub)\ $(stub)
 
 PACKAGE_NAME = shiftd
 PACKAGE_VERSION = 0.1.0
+APP_NAME = shiftapp
 
 ADDIN_SCRIPT = $(PACKAGE_NAME).py
 ADDIN_MANIFEST = $(PACKAGE_NAME).manifest
@@ -546,6 +547,17 @@ endif
 
 	@ls -al $(FUSION_SITE_PACKAGES)
 	@echo "DONE"
+
+.PHONY: run
+# target: run - Run an app with using the default configuration
+run: sys-post-defs
+ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
+	$(eval _python = ${path_mod_local} ${VENV_DIR}/Scripts/python.exe)
+
+	@$(_python) -m $(PACKAGE_NAME).$(APP_NAME) --config "$(DOCKER_DEFAULT_CONFIG)"
+else
+	$(error Unsupported platform (${PLATFORM}))
+endif
 
 
 ##
