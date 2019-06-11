@@ -297,13 +297,25 @@ sdist:
 
 .PHONY: install
 # target: install - Install project sources in "development mode"
-install:
-	@python setup.py develop
+install: sys-post-defs
+ifeq (${PLATFORM},Darwin)
+	$(eval _python = ${VENV_DIR}/bin/python)
+endif
+ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
+	$(eval _python = ${path_mod_local} ${VENV_DIR}/Scripts/python.exe)
+endif
+	@$(_python) setup.py develop
 
 .PHONY: uninstall
 # target: uninstall - Uninstall project sources
-uninstall:
-	@python setup.py develop --uninstall
+uninstall: sys-post-defs
+ifeq (${PLATFORM},Darwin)
+	$(eval _python = ${VENV_DIR}/bin/python)
+endif
+ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
+	$(eval _python = ${path_mod_local} ${VENV_DIR}/Scripts/python.exe)
+endif
+	@$(_python) setup.py develop --uninstall
 
 
 ##
