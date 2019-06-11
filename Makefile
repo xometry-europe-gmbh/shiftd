@@ -7,9 +7,6 @@ stub :=
 space := $(stub) $(stub)
 scr_space := $(stub)\ $(stub)
 
-ERROR_OFFSET = 100
-ERROR_TMP_VENV = $((${ERROR_OFFSET} + 4))
-
 .SUFFIXES:
 
 PACKAGE_NAME = shiftd
@@ -185,9 +182,10 @@ ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
 	$(eval FUSION_SITE_PACKAGES = ${FUSION_SITE_PACKAGES}/Python/packages)
 	$(eval FUSION_SITE_PACKAGES := $(subst ${space},${scr_space},${FUSION_SITE_PACKAGES}))
 	$(eval PYTHON := $(subst ${space},${scr_space},${PYTHON}))
-endif
 
-	$(eval path_mod = PATH="$(FUSION_PYTHON):$${PATH}")
+	$(eval path_mod_hosted = PATH="$(FUSION_PYTHON):$${PATH}")
+	$(eval path_mod_local = PATH="$(shell dirname ${PYTHON_LOCAL}):$${PATH}")
+endif
 
 
 ##
@@ -473,13 +471,13 @@ endif
 
 ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
 	@$(_pip) install -U virtualenv
-	$(eval _virtualenv = ${path_mod} ${FUSION_PYTHON_SCRIPTS}/virtualenv.exe)
+	$(eval _virtualenv = ${path_mod_hosted} ${FUSION_PYTHON_SCRIPTS}/virtualenv.exe)
 	@echo "Virtualenv $$(${_virtualenv} --version)"
 	@echo
 
 	@$(_virtualenv) "$(tmp_path)"
-	$(eval _python = ${path_mod} ${tmp_path}/Scripts/python.exe)
-	$(eval _pip = ${path_mod} ${tmp_path}/Scripts/pip.exe)
+	$(eval _python = ${path_mod_hosted} ${tmp_path}/Scripts/python.exe)
+	$(eval _pip = ${path_mod_hosted} ${tmp_path}/Scripts/pip.exe)
 endif
 
 	@for pkg in $(SITE_PACKAGES); do \
