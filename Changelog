@@ -1,3 +1,8 @@
-2019-06-15  Alex Kopchikov  <alexk3y@gmail.com>
+2019-06-05  Alex Kopchikov  <alexk3y@gmail.com>
 
 * Init barebone project.
+
+
+2019-06-11  Alex Kopchikov  <alexk3y@gmail.com>
+
+* Makefile: Support for both macOS and MinGW64 platforms.
