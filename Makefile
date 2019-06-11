@@ -436,10 +436,10 @@ remove-addin:
 # target: new-local-venv - Create local virtual environment
 new-local-venv: sys-post-defs
 ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
+ifeq ($(wildcard $(VENV_DIR)),)
 	$(eval _python = ${path_mod_local} ${PYTHON_LOCAL})
 	$(eval _pip = ${path_mod_local} ${PYTHON_LOCAL_SCRIPTS}/pip.exe)
 
-ifeq ($(wildcard $(VENV_DIR)),)
 	@echo -e "\nCreating a new virtual environment (local)...\n"
 	@echo -e "Python facility:\n==="
 	@$(_python) --version
@@ -466,7 +466,14 @@ ifeq ($(wildcard $(VENV_DIR)),)
 	@echo -e "DONE\n"
 	@$(_pip) list
 else
-	$(error Local environment `$(VENV_DIR)` already exists)
+	$(eval _python = ${path_mod_local} ${VENV_DIR}/Scripts/python.exe)
+	$(eval _pip = ${path_mod_local} ${VENV_DIR}/Scripts/pip.exe)
+
+	@echo -e "\nUpdating the local virtual environment...\n"
+	@$(_pip) install -Ur requirements.txt
+	@$(_pip) install -Ur requirements-test.txt
+	@echo -e "DONE\n"
+	@$(_pip) list
 endif
 
 else
