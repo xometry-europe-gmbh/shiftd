@@ -323,8 +323,14 @@ endif
 
 .PHONY: check
 # target: check - Run tests
-check:
-	@python setup.py test -a "-vv"
+check: sys-post-defs
+ifeq (${PLATFORM},Darwin)
+	$(eval _python = ${VENV_DIR}/bin/python)
+endif
+ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
+	$(eval _python = ${path_mod_local} ${VENV_DIR}/Scripts/python.exe)
+endif
+	@$(_python) setup.py test -a "-vv"
 
 
 ##
