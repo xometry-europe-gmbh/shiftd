@@ -102,7 +102,10 @@ PYTHON_VERSION = 3.7
 DOCKER_BASE_IMAGE = python:$(PYTHON_VERSION)
 
 DOCKER_PS_ARGS = -s
+
 DOCKER_WORK_DIR = /usr/local/lib/python$(PYTHON_VERSION)/site-packages/$(PACKAGE_NAME)
+DOCKER_CONFIG_DIR = $(DOCKER_WORK_DIR)/cfg
+DOCKER_DEFAULT_CONFIG = $(DOCKER_CONFIG_DIR)/dev.toml
 
 DOCKER_PORT = 8088
 
@@ -259,7 +262,7 @@ docker-build: distclean dist
 # target: docker-run - Run temporary container in an interactive mode
 docker-run:
 	@$(DOCKER) run -it --rm -p "$(DOCKER_PORT):$(DOCKER_PORT)" \
-		"$(PACKAGE_NAME):$(PACKAGE_VERSION)"
+		"$(PACKAGE_NAME):$(PACKAGE_VERSION)" --config "$(DOCKER_DEFAULT_CONFIG)"
 
 .PHONY: docker-clean
 # target: docker-clean - Clean dangling images

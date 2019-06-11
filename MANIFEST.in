@@ -12,6 +12,8 @@ include requirements.txt
 include setup.cfg
 
 recursive-include doc *.rst *.py
+recursive-include shiftd/cfg *.toml
 
 global-exclude __pycache__ *.py[cod]
 prune .venv
+prune .tmp_venv
