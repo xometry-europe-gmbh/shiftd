@@ -461,7 +461,8 @@ ifeq ($(wildcard $(VENV_DIR)),)
 	@$(_python) -c 'import ssl ; print(ssl.OPENSSL_VERSION)'
 	@echo
 
-	@$(_pip) install -Ur requirements-test.txt
+	@$(_pip) install -r requirements.txt
+	@$(_pip) install -r requirements-test.txt
 	@echo -e "DONE\n"
 	@$(_pip) list
 else
