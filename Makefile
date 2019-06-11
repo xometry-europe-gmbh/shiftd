@@ -11,7 +11,10 @@ scr_space := $(stub)\ $(stub)
 
 PACKAGE_NAME = shiftd
 PACKAGE_VERSION = 0.1.0
+
 APP_NAME = shiftapp
+APP_CONFIG_DIR = $(CURDIR)/$(PACKAGE_NAME)/cfg
+APP_DEFAULT_CONFIG = $(APP_CONFIG_DIR)/dev.toml
 
 ADDIN_SCRIPT = $(PACKAGE_NAME).py
 ADDIN_MANIFEST = $(PACKAGE_NAME).manifest
@@ -562,7 +565,7 @@ run: sys-post-defs
 ifneq ($(findstring MINGW64_NT,${PLATFORM}),)
 	$(eval _python = ${path_mod_local} ${VENV_DIR}/Scripts/python.exe)
 
-	@$(_python) -m $(PACKAGE_NAME).$(APP_NAME) --config "$(DOCKER_DEFAULT_CONFIG)"
+	@$(_python) -m $(PACKAGE_NAME).$(APP_NAME) --config "$(APP_DEFAULT_CONFIG)"
 else
 	$(error Unsupported platform (${PLATFORM}))
 endif
