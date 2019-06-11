@@ -52,6 +52,8 @@ Makefile facility
     install-addin - Install addin to the Fusion's host
     remove-addin - Remove addin from the Fusion's host
 
+    run - Run an app with using the default configuration
+
 * Docker facility (macOS only)::
 
     docker-info - Display system-wide information
@@ -281,3 +283,22 @@ Get started with MinGW64
     Installing addin: shiftd...
     shiftd.py (DONE)
     shiftd.manifest (DONE)
+
+* Configure and run the logistic app::
+
+    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
+    # cat shiftd/cfg/dev.toml
+    [main]
+    version = "1"
+    debug = true
+
+    [rpc]
+    proto = "tcp"
+    host = "127.0.0.1"
+    port = 4242
+
+    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
+    # make run
+    INFO: __main__ [3472] {shiftapp.py@L67}: Debug mode is ON
+    INFO: __main__ [3472] {shiftapp.py@L68}: Running configuration: C:\Users\Administrator\dev\shiftd\shiftd\cfg\dev.toml
+    INFO: __main__ [3472] {shiftapp.py@L69}: RPC_URI -> 'tcp://127.0.0.1:4242'
