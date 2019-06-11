@@ -131,7 +131,7 @@ Get started with MinGW64
     PYTHON_LOCAL -> /c/Python37/python.exe
     PYTHON_LOCAL_SCRIPTS -> /c/Python37/Scripts
 
-* Prepare a new virtual environment for the addin based on Fusion-hosted version of Python::
+* Prepare a new virtual environment for the addin based on Fusion-hosted version of Python (via MinGW64 console)::
 
     Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
     # make mostlyclean
@@ -179,7 +179,7 @@ Get started with MinGW64
     drwxr-xr-x 1 Administrator None      0 Jun 10 06:29 zmq
     DONE
 
-* Prepare a new virtual environment for the standalone logistic app based on latest Python version::
+* Prepare a new virtual environment for the standalone app based on latest Python version (via MinGW64 console)::
 
     Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
     # make new-local-venv
@@ -210,3 +210,74 @@ Get started with MinGW64
     astroid            2.2.5
     atomicwrites       1.3.0
     <...>
+
+* Install the logistic app onto a local environment (via MinGW64 console)::
+
+    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
+    # make install
+    running develop
+    running egg_info
+    creating ShiftD.egg-info
+    writing ShiftD.egg-info\PKG-INFO
+    writing dependency_links to ShiftD.egg-info\dependency_links.txt
+    writing entry points to ShiftD.egg-info\entry_points.txt
+    writing requirements to ShiftD.egg-info\requires.txt
+    writing top-level names to ShiftD.egg-info\top_level.txt
+    writing manifest file 'ShiftD.egg-info\SOURCES.txt'
+    reading manifest file 'ShiftD.egg-info\SOURCES.txt'
+    reading manifest template 'MANIFEST.in'
+    warning: no previously-included files matching '__pycache__' found anywhere in distribution
+    warning: no previously-included files matching '*.py[cod]' found anywhere in distribution
+    no previously-included directories found matching '.venv'
+    writing manifest file 'ShiftD.egg-info\SOURCES.txt'
+    running build_ext
+    Creating c:\users\administrator\dev\shiftd\.venv\lib\site-packages\ShiftD.egg-link (link to .)
+    Adding ShiftD 0.1.0 to easy-install.pth file
+    Installing shiftapp-script.py script to C:\Users\Administrator\dev\shiftd\.venv\Scripts
+    Installing shiftapp.exe script to C:\Users\Administrator\dev\shiftd\.venv\Scripts
+    <...>
+    Using c:\users\administrator\dev\shiftd\.venv\lib\site-packages
+    Finished processing dependencies for ShiftD==0.1.0
+
+* Run tests (via MinGW64 console)::
+
+    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
+    # make check
+    running test
+    running egg_info
+    writing ShiftD.egg-info\PKG-INFO
+    writing dependency_links to ShiftD.egg-info\dependency_links.txt
+    writing entry points to ShiftD.egg-info\entry_points.txt
+    writing requirements to ShiftD.egg-info\requires.txt
+    writing top-level names to ShiftD.egg-info\top_level.txt
+    reading manifest file 'ShiftD.egg-info\SOURCES.txt'
+    reading manifest template 'MANIFEST.in'
+    warning: no previously-included files matching '__pycache__' found anywhere in distribution
+    warning: no previously-included files matching '*.py[cod]' found anywhere in distribution
+    no previously-included directories found matching '.venv'
+    writing manifest file 'ShiftD.egg-info\SOURCES.txt'
+    running build_ext
+    ============================= test session starts =============================
+    platform win32 -- Python 3.7.3, pytest-4.6.2, py-1.8.0, pluggy-0.12.0 -- C:\Users\Administrator\dev\shiftd\.venv\Scripts\python.exe
+    cachedir: .pytest_cache
+    rootdir: C:\Users\Administrator\dev\shiftd
+    plugins: sugar-0.9.2
+    collecting ... collected 1 item
+
+    shiftd/tests/test_shiftd.py::TestShiftd::test_shiftd PASSED              [100%]
+
+    ========================== 1 passed in 0.11 seconds ===========================
+
+* Install addin to the Fusion's host (via MinGW64 console)::
+
+    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
+    # make remove-addin
+
+    Removing addin: shiftd...NOT FOUND
+
+    Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
+    # make install-addin
+
+    Installing addin: shiftd...
+    shiftd.py (DONE)
+    shiftd.manifest (DONE)
