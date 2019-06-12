@@ -6,7 +6,7 @@ from typing import (
 )
 
 
-class LOG_LEVELS(Enum):
+class log_level(Enum):
     CRITICAL = 50
     ERROR = 40
     WARNING = 30
@@ -15,7 +15,7 @@ class LOG_LEVELS(Enum):
     NOTSET = 0
 
 
-def log(message: str, file: str, mode: str = 'a', level: LOG_LEVELS = LOG_LEVELS.NOTSET,
+def log(message: str, file: str, mode: str = 'a', level: log_level = log_level.NOTSET,
          ident: Optional[str] = None
 ) -> None:
 #

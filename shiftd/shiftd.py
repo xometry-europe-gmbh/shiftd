@@ -1,3 +1,4 @@
+from functools import partial
 from pathlib import Path
 from typing import (
     Dict,
@@ -5,8 +6,8 @@ from typing import (
 )
 
 import shiftd.logger
-from shiftd.logger import LOG_LEVELS
 from shiftd.utils import make_singleton
+from shiftd.logger import log_level
 
 from adsk import (
     core as adskCore,
@@ -18,21 +19,20 @@ from adsk import (
 SELF_NAME = Path(__file__).name
 LOG_FILE = Path.home() / '{}.log'.format(SELF_NAME)
 
-def log(message: str, level: LOG_LEVELS = LOG_LEVELS.DEBUG) -> None:
-    shiftd.logger.log(message, str(LOG_FILE), mode='w', level=level, ident=SELF_NAME)
+debug = partial(shiftd.logger.log, file=str(LOG_FILE), level=log_level.DEBUG, ident=SELF_NAME)
 
 
 def get_app_and_ui() -> "Tuple[adskCore.Application, adskCore.UserInterface]":
     app = adskCore.Application.get() or None
     ui = getattr(app, 'userInterface', None)
 
-    log('Got Fusion app ({!r}) and UI ({!r}) objects'.format(app, ui))
+    debug('Got Fusion app ({!r}) and UI ({!r}) objects'.format(app, ui))
     return app, ui
 
 
 # TODO: Catch error with decorator
 def run(context: Dict[str, str]) -> None:
-    log('Addin started with a context: {!r}'.format(context))
+    debug('Addin started with a context: {!r}'.format(context))
     _, ui = get_app_and_ui()
 
     ui.messageBox('Hello, World!')
@@ -40,4 +40,4 @@ def run(context: Dict[str, str]) -> None:
 
 # TODO: Catch error with decorator
 def stop(context: Dict[str, str]) -> None:
-    log('Addin stopped with a context: {!r}'.format(context))
+    debug('Addin stopped with a context: {!r}'.format(context))
