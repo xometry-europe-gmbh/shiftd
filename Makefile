@@ -406,7 +406,7 @@ clean-site: sys-post-defs
 
 .PHONY: install-addin
 # target: install-addin - Install addin to the Fusion's host
-install-addin:
+install-addin: sys-post-defs clean
 	@echo -e "\nInstalling addin: $(PACKAGE_NAME)..."
 	$(eval addin_path = ${FUSION_ADDINS}/${PACKAGE_NAME})
 
@@ -423,14 +423,28 @@ install-addin:
 		cp $(srcdir)/$${filename} $(addin_path) && echo "(DONE)"; \
 	done
 
+	@echo -en "\nInstalling the ShiftD package onto Fusion's site..."
+	@if [[ ! -d $(FUSION_SITE_PACKAGES)/$(PACKAGE_NAME) ]]; then \
+		cp -R $(CURDIR)/$(PACKAGE_NAME) $(FUSION_SITE_PACKAGES) && echo "DONE"; \
+	else \
+		echo "SKIPPED"; \
+	fi
+
 .PHONY: remove-addin
 # target: remove-addin - Remove addin from the Fusion's host
-remove-addin:
+remove-addin: sys-post-defs
 	@echo -en "\nRemoving addin: $(PACKAGE_NAME)..."
 	$(eval addin_path = ${FUSION_ADDINS}/${PACKAGE_NAME})
 
 	@if [[ -d $(addin_path) ]]; then \
 		rm -rf $(addin_path) && echo "DONE"; \
+	else \
+		echo "NOT FOUND"; \
+	fi
+
+	@echo -en "\nRemoving the ShiftD package from Fusion's site..."
+	@if [[ -d $(FUSION_SITE_PACKAGES)/$(PACKAGE_NAME) ]]; then \
+		rm -rf $(FUSION_SITE_PACKAGES)/$(PACKAGE_NAME) && echo "DONE"; \
 	else \
 		echo "NOT FOUND"; \
 	fi
