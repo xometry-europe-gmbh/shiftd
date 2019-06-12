@@ -275,7 +275,9 @@ Get started with MinGW64
     Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
     # make remove-addin
 
-    Removing addin: shiftd...NOT FOUND
+    Removing addin: shiftd...DONE
+
+    Removing the ShiftD package from Fusion's site...DONE
 
     Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
     # make install-addin
@@ -283,6 +285,8 @@ Get started with MinGW64
     Installing addin: shiftd...
     shiftd.py (DONE)
     shiftd.manifest (DONE)
+
+    Installing the ShiftD package onto Fusion's site...DONE
 
 * Configure and run the logistic app (via MinGW64 console)::
 
