@@ -399,7 +399,7 @@ clean-site: sys-post-defs
         -type f -exec rm -rf {} + \
     && \
     find $(FUSION_SITE_PACKAGES) \
-		-name "*.py[cod]" -exec rm -f {} + -o \
+		-name "*.pyc" -exec rm -f {} + -o \
 		-name __pycache__ -exec rm -rf {} + \
 	&& \
     echo "DONE"
