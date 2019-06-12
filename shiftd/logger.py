@@ -21,5 +21,5 @@ def log(message: str, file: str, mode: str = 'a', level: LOG_LEVELS = LOG_LEVELS
 #
     with open(file, mode) as fd:
         fd.write('{0} |><| {1}{3}: {2}\n'
-                 .format(dt.now(), level.name, message, '{{{}}}'.format(ident) if ident else '')
+                 .format(dt.now(), level.name, message, ' {{{}}}'.format(ident) if ident else '')
         )
