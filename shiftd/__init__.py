@@ -17,8 +17,8 @@ DEBUG = False
 CONFIG_TYPE = Optional[Dict[str, Any]]
 # <==
 
-ARGS: Optional[argparse.Namespace] = None
-CONFIG: CONFIG_TYPE = None
+ARGS = None  # type: Optional[argparse.Namespace]
+CONFIG = None  # type: CONFIG_TYPE
 
 LOG_FMT = '%(levelname)s: %(name)s [%(process)d] {%(filename)s@L%(lineno)d}: %(message)s'
 LOG_LVL = logging.INFO
@@ -26,4 +26,4 @@ LOG_LVL = logging.INFO
 SHIFTD_DESC = 'Shift GmbH Dispatcher'
 SHIFTAPP_DESC = 'Shift GmbH Logistic App'
 
-RPC_URI: Optional[str] = None
+RPC_URI = None  # type: Optional[str]
