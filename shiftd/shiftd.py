@@ -6,8 +6,11 @@ from typing import (
 )
 
 import shiftd.logger
-from shiftd.utils import make_singleton
 from shiftd.logger import log_level
+from shiftd.utils import (
+    make_singleton,
+    try_catch,
+)
 
 from adsk import (
     core as adskCore,
@@ -30,7 +33,7 @@ def get_app_and_ui() -> "Tuple[adskCore.Application, adskCore.UserInterface]":
     return app, ui
 
 
-# TODO: Catch error with decorator
+@try_catch
 def run(context: Dict[str, str]) -> None:
     debug('Addin started with a context: {!r}'.format(context))
     _, ui = get_app_and_ui()
@@ -38,6 +41,6 @@ def run(context: Dict[str, str]) -> None:
     ui.messageBox('Hello, World!')
 
 
-# TODO: Catch error with decorator
+@try_catch
 def stop(context: Dict[str, str]) -> None:
     debug('Addin stopped with a context: {!r}'.format(context))
