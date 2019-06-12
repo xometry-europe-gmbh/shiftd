@@ -2,9 +2,6 @@
 
 import pytest
 
-from shiftd import *
-from shiftd.tests.test_shiftd import *
-
 
 class TestShiftd:
 
