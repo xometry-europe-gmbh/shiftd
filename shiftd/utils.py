@@ -1,8 +1,21 @@
 import argparse
+import traceback
 
+from functools import partial
+from pathlib import Path
 from typing import (
     Any,
+    Callable,
 )
+
+import shiftd.logger
+from shiftd.logger import log_level
+
+
+SELF_NAME = Path(__file__).name
+LOG_FILE = Path.home() / '{}.log'.format(SELF_NAME)
+
+error = partial(shiftd.logger.log, file=str(LOG_FILE), level=log_level.ERROR, ident=SELF_NAME)
 
 
 def make_singleton(cls):  # type: ignore
@@ -28,6 +41,22 @@ def make_singleton(cls):  # type: ignore
             return c.__instance
 
     return wrp
+
+
+class try_catch:
+
+    def __init__(self, func: Callable) -> None:
+        self.__func = func
+
+    def __call__(self, *args: Any, **kwargs: Any) -> None:
+    # pylint: disable=broad-except
+    #
+        try:
+            return self.__func(*args, **kwargs)
+        except Exception:
+            error('`{0!r}` failed for args={1!r} and kwargs={2!r}'
+                  .format(self.__func, args, kwargs))
+            error('{!s}'.format(traceback.format_exc()))
 
 
 class CustomHelpFormatter(argparse.HelpFormatter):
