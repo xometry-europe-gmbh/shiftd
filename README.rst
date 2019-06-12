@@ -284,7 +284,7 @@ Get started with MinGW64
     shiftd.py (DONE)
     shiftd.manifest (DONE)
 
-* Configure and run the logistic app::
+* Configure and run the logistic app (via MinGW64 console)::
 
     Administrator@EC2AMAZ-T9F6NAP MINGW64 /c/Users/Administrator/dev/shiftd
     # cat shiftd/cfg/dev.toml
