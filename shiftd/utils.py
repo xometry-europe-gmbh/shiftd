@@ -1,10 +1,40 @@
 import argparse
 
+from typing import (
+    Any,
+)
+
+
+def make_singleton(cls):  # type: ignore
+
+    class wrp(cls):
+    # pylint: disable=bad-classmethod-argument
+    #
+        def __new__(c, *args: Any, **kwargs: Any) -> "wrp":
+        # pylint: disable=unused-argument
+        #
+            instance = getattr(c, '_{}__instance'.format(c.__name__), None)
+
+            if instance is None:
+                instance = super().__new__(c)
+                c.__instance = instance
+            elif not isinstance(instance, c):
+                raise TypeError('Incompatible type', type(instance))
+
+            return instance
+
+        @classmethod
+        def _new(c) -> "wrp":
+            return c.__instance
+
+    return wrp
+
 
 class CustomHelpFormatter(argparse.HelpFormatter):
 
     def _format_action(self, action: argparse.Action) -> str:
-        # pylint: disable=attribute-defined-outside-init
+    # pylint: disable=attribute-defined-outside-init
+    #
         if isinstance(action, argparse._SubParsersAction):
             self._subaction_max_length = max(
                 len(i) for i in [self._format_action_invocation(a)
