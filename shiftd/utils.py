@@ -9,16 +9,17 @@ from typing import (
     Optional,  # <- used in `make_singleton.wrp._new` signature
 )
 
-import shiftd.logger
 import toml
+
 import shiftd
+from shiftd import logger
 from shiftd.logger import log_level
 
 
 SELF_NAME = Path(__file__).name
 LOG_FILE = Path.home() / '{}.log'.format(SELF_NAME)
 
-error = partial(shiftd.logger.log, file=str(LOG_FILE), level=log_level.ERROR, ident=SELF_NAME)
+error = partial(logger.log, file=str(LOG_FILE), level=log_level.ERROR, ident=SELF_NAME)
 
 
 def make_singleton(cls):  # type: ignore
