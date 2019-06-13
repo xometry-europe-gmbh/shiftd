@@ -6,10 +6,11 @@ import sys
 
 from pathlib import Path
 
-import toml
-
 import shiftd
-from shiftd.utils import CustomHelpFormatter
+from shiftd.utils import (
+    CustomHelpFormatter,
+    parse_config,
+)
 
 
 ERROR_CONFIG = 1
@@ -17,19 +18,6 @@ ERROR_CONFIG_PARSING = 2
 
 logging.basicConfig(format=shiftd.LOG_FMT, level=shiftd.LOG_LVL)
 log = logging.getLogger(__name__)
-
-
-def parse_config(file: str) -> shiftd.CONFIG_TYPE:
-    if Path(file).exists():
-        try:
-            return toml.load(file)
-        except IndexError:
-            log.error('Unable to load TOML')
-        except toml.TomlDecodeError:
-            log.error('Unable to decode TOML')
-        return None
-    else:
-        raise FileNotFoundError(file)
 
 
 def parse_cmdline() -> argparse.Namespace:

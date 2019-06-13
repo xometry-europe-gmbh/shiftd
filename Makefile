@@ -20,6 +20,7 @@ ADDIN_SCRIPT = $(PACKAGE_NAME).py
 ADDIN_MANIFEST = $(PACKAGE_NAME).manifest
 
 SITE_PACKAGES = \
+	toml \
 	zerorpc
 
 srcdir = $(CURDIR)/$(PACKAGE_NAME)

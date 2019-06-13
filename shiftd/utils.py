@@ -6,9 +6,12 @@ from pathlib import Path
 from typing import (
     Any,
     Callable,
+    Optional,  # <- used in `make_singleton.wrp._new` signature
 )
 
 import shiftd.logger
+import toml
+import shiftd
 from shiftd.logger import log_level
 
 
@@ -85,3 +88,16 @@ class CustomHelpFormatter(argparse.HelpFormatter):
             ))
         else:
             return super()._format_action(action)
+
+
+def parse_config(file: str) -> shiftd.CONFIG_TYPE:
+    if Path(file).exists():
+        try:
+            return toml.load(file)
+        except IndexError:
+            error('Unable to load TOML')
+        except toml.TomlDecodeError:
+            error('Unable to decode TOML')
+        return None
+    else:
+        raise FileNotFoundError(file)
