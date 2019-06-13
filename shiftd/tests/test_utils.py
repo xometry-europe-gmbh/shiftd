@@ -15,6 +15,9 @@ class TestUtils:
 #
     def _setup(self) -> None:
 
+        self.args = [1, 17, 29]
+        self.kwords = {'word': 'Apple', 'Name': 'Chloe', 'qux': 'LUX'}
+
         class Foo(dict):
 
             FOO = 33
@@ -46,16 +49,23 @@ class TestUtils:
     def test_make_singleton(self) -> None:
         self._setup()
 
-        args = [1, 17, 29]
-        kwords = {'word': 'Apple', 'Name': 'Chloe', 'qux': 'LUX'}
-
-        x = self.Bar(*args, **kwords)
+        x = self.Bar(*self.args, **self.kwords)
         y = self.Bar._new()  # type: ignore # pylint: disable=no-member
         z = self.Bar._new()  # type: ignore # pylint: disable=no-member
 
         assert y is x is z
         assert x == y == z
-        assert kwords['qux'] == x.qux == y.qux == z.qux
+        assert self.kwords['qux'] == x.qux == y.qux == z.qux
+
+        self._teardown()
+
+    def test_make_singleton_new_method(self) -> None:
+        self._setup()
+
+        assert self.Bar._new() is None  # type: ignore # pylint: disable=no-member
+
+        self.Bar()
+        assert isinstance(self.Bar._new(), self.Bar)  # type: ignore # pylint: disable=no-member
 
         self._teardown()
 

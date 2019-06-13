@@ -26,7 +26,7 @@ def make_singleton(cls):  # type: ignore
         def __new__(c, *args: Any, **kwargs: Any) -> "wrp":
         # pylint: disable=unused-argument
         #
-            instance = getattr(c, '_{}__instance'.format(c.__name__), None)
+            instance = c._new()
 
             if instance is None:
                 instance = super().__new__(c)
@@ -37,8 +37,8 @@ def make_singleton(cls):  # type: ignore
             return instance
 
         @classmethod
-        def _new(c) -> "wrp":
-            return c.__instance
+        def _new(c) -> "Optional[wrp]":
+            return getattr(c, '_{}__instance'.format(c.__name__), None)
 
     return wrp
 
