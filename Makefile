@@ -561,10 +561,12 @@ endif
     	(cd "$${lib_path}" && \
     	 \
     	  recurse_flag=""; \
-    	  for fname in *$${item}*; do \
-    	      if [[ -d "$${fname}" ]]; then recurse_flag="-R"; fi; \
-    	      cp $${recurse_flag} "$${fname}" $(FUSION_SITE_PACKAGES); \
-    	  done \
+    	  shopt -s nocaseglob; \
+	    	  for fname in *$${item}*; do \
+	    	      if [[ -d "$${fname}" ]]; then recurse_flag="-R"; fi; \
+	    	      cp $${recurse_flag} "$${fname}" $(FUSION_SITE_PACKAGES); \
+	    	  done; \
+	      shopt -u nocaseglob \
     	 ); \
 	done
 
