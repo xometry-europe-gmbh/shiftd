@@ -18,22 +18,22 @@ from shiftd.utils import (
 
 from adsk import (
     core as adskCore,
-    fusion as adskFusion,
-    cam as adskCam,
 )
 
 
 SELF_NAME = Path(__file__).name
 LOG_FILE = Path.home() / '{}.log'.format(SELF_NAME)
 
-debug = partial(shiftd.logger.log, file=str(LOG_FILE), level=log_level.DEBUG, ident=SELF_NAME)
+_log_kwargs = {'file': str(LOG_FILE), 'ident': SELF_NAME}
+#
+dbg = partial(shiftd.logger.log, level=log_level.DEBUG, **_log_kwargs)
 
 
 def get_app_and_ui() -> "Tuple[adskCore.Application, adskCore.UserInterface]":
     app = adskCore.Application.get() or None
     ui = getattr(app, 'userInterface', None)
 
-    debug('Got Fusion app ({!r}) and UI ({!r}) objects'.format(app, ui))
+    dbg('Got Fusion app ({0!r}) and UI ({1!r}) objects'.format(app, ui))
     return app, ui
 
 
@@ -48,7 +48,7 @@ class Server:
 
 @try_catch
 def run(context: Dict[str, str]) -> None:
-    debug('Addin started with a context: {!r}'.format(context))
+    dbg('Addin started with a context: {!r}'.format(context))
 
     shiftd.CONFIG = parse_config(CONFIG_FILE)
 
@@ -62,4 +62,4 @@ def run(context: Dict[str, str]) -> None:
 
 @try_catch
 def stop(context: Dict[str, str]) -> None:
-    debug('Addin stopped with a context: {!r}'.format(context))
+    dbg('Addin stopped with a context: {!r}'.format(context))
