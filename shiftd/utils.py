@@ -92,7 +92,7 @@ class CustomHelpFormatter(argparse.HelpFormatter):
 
 
 def parse_config(file: str) -> shiftd.CONFIG_TYPE:
-    if Path(file).exists():
+    if Path(file).is_file():
         try:
             return toml.load(file)
         except IndexError:
