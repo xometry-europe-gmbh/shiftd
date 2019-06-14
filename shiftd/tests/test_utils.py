@@ -10,11 +10,10 @@ from shiftd.utils import make_singleton
 
 
 class TestUtils:
-# pylint: disable=blacklisted-name
-# pylint: disable=attribute-defined-outside-init
-#
-    def _setup(self) -> None:
+    # pylint: disable=blacklisted-name
+    # pylint: disable=attribute-defined-outside-init
 
+    def _setup(self) -> None:
         self.args = [1, 17, 29]
         self.kwords = {'word': 'Apple', 'Name': 'Chloe', 'qux': 'LUX'}
 
