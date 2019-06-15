@@ -69,9 +69,9 @@ class Dispatcher:
     ##
     # RPC-methods to dispatch
     #
-    # Methods that using Fusion API explicitly have a such signature: `def fusion_*(self, *)`
+    # Methods that using a Fusion API have a such signature: `def fusion_*(self, *)`
     # ==>
-    def hello(self, subject: str) -> None:
+    def fusion_hello(self, subject: str) -> None:
         self.__ui.messageBox('Hello, {}!'.format(subject))
 
     def quit(self) -> None:
