@@ -90,14 +90,19 @@ class Dispatcher:
                 error('Invalid file or path: {!s}'.format(file))
 
     def fusion_close_all(self) -> None:
-        fu_iter = Fu.iter(self.__app.documents)
+        documents_count = self.__app.documents.count
+        dbg('Fusion has {!s} opened documents currently'.format(documents_count))
 
-        for index, doc in enumerate(fu_iter):
-            name = doc.name
-            success = doc.close(False)  # (saveChanges: bool) -> bool
+        for i in range(1, documents_count + 1):
+            document = self.__app.documents.item(0)
+            dbg('Trying to close a Fusion document named {0!r} (#{1!s}/{2!s})'
+                .format(document.name, i, documents_count))
 
-            dbg('Trying to close a Fusion document named {0!r} [{1!s}, {2!s}) -> {3!r}'
-                .format(name, index, len(fu_iter), success))
+            success = document.close(False)  # (saveChanges: bool) -> bool
+            if success:
+                dbg('Document (#{!s}) was successfully closed'.format(i))
+            else:
+                dbg('Document (#{!s}) is failed to close'.format(i))
     # <==
     ##
 
